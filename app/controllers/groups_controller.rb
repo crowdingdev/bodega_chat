@@ -7,27 +7,20 @@ class GroupsController < ApplicationController
     @groups = Group.all
   end
 
-  # GET /groups/1
-  # GET /groups/1.json
-  def show
-  end
+  def show; end
 
-  # GET /groups/new
   def new
     @group = Group.new
   end
 
-  # GET /groups/1/edit
-  def edit
-  end
+  def edit; end
 
-  # POST /groups
-  # POST /groups.json
   def create
-    @group = Group.new(group_params)
-
+    @group = Group.new( group_params )
+    
     respond_to do |format|
       if @group.save
+
         format.html { redirect_to @group, notice: 'Group was successfully created.' }
         format.json { render :show, status: :created, location: @group }
       else
@@ -37,38 +30,35 @@ class GroupsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /groups/1
-  # PATCH/PUT /groups/1.json
+  # Put a new member into a group
+  def add_member
+   current_user.groups.find(params[:group_id]).users << User.find( params[:group][:user_ids] )
+   respond_to do |format|
+    format.html {redirect_to :back}
+    format.js
+   end
+  end
+
   def update
     respond_to do |format|
       if @group.update(group_params)
         format.html { redirect_to @group, notice: 'Group was successfully updated.' }
-        format.json { render :show, status: :ok, location: @group }
       else
         format.html { render :edit }
-        format.json { render json: @group.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /groups/1
-  # DELETE /groups/1.json
-  def destroy
-    @group.destroy
-    respond_to do |format|
-      format.html { redirect_to groups_url }
-      format.json { head :no_content }
-    end
-  end
+  def destroy; end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_group
-      @group = Group.find(params[:id])
+      @group = current_user.groups.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def group_params
-      params.require(:group).permit(:name)
+      params.require(:group).permit(:name, :user_ids => [])
     end
 end

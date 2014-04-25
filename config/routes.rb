@@ -4,9 +4,15 @@ Rails.application.routes.draw do
   devise_for :users
   root 'users#index'
 
-  resources :users_groups
+  resources :users_groups 
 
-  resources :groups
+
+  resources :groups do 
+    resources :messages
+    post :add_member
+  end
+
+  
 
   resources :messages
 

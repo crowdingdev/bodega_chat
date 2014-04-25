@@ -1,9 +1,64 @@
 <p id="notice"><%= notice %></p>
 
+<%= render 'form' %>
+
+<hr>
+
+<%= form_for(:group, :url =>  group_add_member_path(@group) ,:method => :post) do |f| %>
+
+
+  <%= f.collection_select  :user_ids, User.all - @group.users , :id, :email,  {:prompt=>true} %>
+
+    <%= f.submit "add" %>
+
+<% end %>
+
+
+<hr>
+
 <p>
   <strong>Name:</strong>
   <%= @group.name %>
+<h5>Members</h5>
+   <%= @group.users.map(&:email).join(", ") %>
 </p>
+
+<hr>
+<h5>Messages</h5>
+<% @group.messages.each do |message| %>
+
+<p><%= message.user.email %>:
+	<%= message.content %>
+</p>
+<%end%>
+
+
+
+<%= form_for([@group, Message.new]) do |f| %>
+  <% if @group.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@group.errors.count, "error") %> prohibited this group from being saved:</h2>
+
+      <ul>
+      <% @group.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+ <div class="field">
+    <%= f.label :content %><br>
+    <%= f.text_area :content %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+
+
+
+
 
 <%= link_to 'Edit', edit_group_path(@group) %> |
 <%= link_to 'Back', groups_path %>

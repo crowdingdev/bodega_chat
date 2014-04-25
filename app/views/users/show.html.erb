@@ -8,6 +8,15 @@
 <p>
   <strong>Name:</strong>
   <%= @user.name %>
+
+  <h3>My groups</h3>
+  <% @user.groups.each do |group| %>
+  <div style="border: 1px solid #ccc;">
+  <%= link_to group.name, group %>
+  <h5>group members:</h5>
+  <%= group.users.map(&:email).join(", ") %>
+</div>
+  <%end%>
 </p>
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
